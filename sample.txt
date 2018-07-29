@@ -1,0 +1,50 @@
+linux
+cd 원하는 path
+- 상대경로
+	- .
+	- .. 상위
+
+
+
+git
+- git clone 서버의 주소
+
+- git add 파일/디렉토리경로
+	- git add .
+- git commit -m "sdfsdfsd"
+- git push
+- git pull
+
+genus <- c('acaule', 'sdfsfsd')
+species <-c("Solahu", 'sdfsdfsd')
+
+real_total <- data.frame()
+for (n in 1:length(genus)) {
+    tree_data <- gbif(name[n], sepcies=sepcies[n])
+    
+    acaule1<-na.omit(acaule)
+    
+    countryname<-unique(acaule1$country)
+    
+    #geoco<- geocode(countryname)
+    #geoco<-geoco[, c(1,5:8)]
+    
+    acaule_total<-data.frame()
+    
+    for (c in countryname) {
+        c_xmin <- geoco[geoco$originalPlace==c,]$xmin
+        c_xmax <- geoco[geoco$originalPlace==c,]$xmax
+        c_ymin <- geoco[geoco$originalPlace==c,]$ymin
+        c_ymax <- geoco[geoco$originalPlace==c,]$ymax
+        
+        boundary <- acaule1[(acaule1$country == c) & (c_xmin < acaule1$lon), ]
+        boundary <- boundary[(boundary$country == c) & (c_xmax > boundary$lon), ]
+        boundary <- boundary[(boundary$country == c) & (c_ymin < boundary$lat), ]
+        boundary <- boundary[(boundary$country == c) & (c_ymax > boundary$lat), ]
+        
+        acaule_total <- rbind(acaule_total, boundary)
+    }
+    real_total <- rbind(real_total, acaule_total)
+}
+
+write.csv(real_total, 'filepath', row.names=FALSE)
